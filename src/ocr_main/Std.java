@@ -1,5 +1,6 @@
 package ocr_main;
 /** place to define global constants */
 public class Std {
-	public static final int STD_WIDTH = 60, STD_HEIGHT = 60;
+	public static final int STD_WIDTH = 52, STD_HEIGHT = 100;
+	public static final int STD_THRESH = 127;
 }

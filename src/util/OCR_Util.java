@@ -1,6 +1,9 @@
 package util;
 import org.opencv.core.Mat;
+import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
+import ocr_main.Std;
 
 public class OCR_Util {
 	public static Mat[] digitTemplates(){
@@ -14,6 +17,7 @@ public class OCR_Util {
 				int colStart = img.cols() * j/5;
 				int colEnd = img.cols() * (j+1)/5 - 1;
 				set[i*5 + j] = p.boundingRectChar(img.submat(rowStart, rowEnd, colStart, colEnd));
+				Imgproc.resize(set[i*5 + j], set[i*5 + j], new Size(Std.STD_WIDTH, Std.STD_HEIGHT));
 			}
 		}
 		return set;
