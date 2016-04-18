@@ -6,8 +6,8 @@ import org.opencv.imgproc.Imgproc;
 import ocr_main.Std;
 
 public class OCR_Util {
-	public static Mat[] digitTemplates(){
-		Mat img = Imgcodecs.imread("img/digits_train.png");
+	public static Mat[] digitTemplates(boolean output){
+		Mat img = Imgcodecs.imread("img/digits_templates.png");
 		Preprocessor p = new Preprocessor();
 		Mat set[] = new Mat[10];
 		for(int i = 0;i < 2;i++){
@@ -18,6 +18,8 @@ public class OCR_Util {
 				int colEnd = img.cols() * (j+1)/5 - 1;
 				set[i*5 + j] = p.boundingRectChar(img.submat(rowStart, rowEnd, colStart, colEnd));
 				Imgproc.resize(set[i*5 + j], set[i*5 + j], new Size(Std.STD_WIDTH, Std.STD_HEIGHT));
+				if(output)
+					Imgcodecs.imwrite("img/" + (i*5 + j) + ".png", set[i*5 + j]);
 			}
 		}
 		return set;

@@ -8,7 +8,7 @@ import util.*;
 public class OCR_Main {
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-		Mat[] templates = OCR_Util.digitTemplates();
+		Mat[] templates = OCR_Util.digitTemplates(true);
 		Mat[] tests = testSet();
 		Classifier c = new Classifier();
 		for(int i = 0;i < tests.length;i++){
