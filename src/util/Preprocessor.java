@@ -2,6 +2,7 @@ package util;
 import org.opencv.core.Mat;
 import org.opencv.core.Range;
 
+/** Responsible for making image black and white, as well as segmenting characters */
 public class Preprocessor {
 	public int[][] binarize(Mat m){
 		//TODO decide if this method is needed
