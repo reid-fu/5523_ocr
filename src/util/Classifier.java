@@ -4,12 +4,33 @@ import org.opencv.core.Mat;
 import ocr_main.Std;
 
 public class Classifier {
-	private double[] weights;
+	private double[][] weights;
+	private double learningRate = .05;
 	private List<Mat[]> templates;
 	public Classifier(int numFonts){
-		weights = new double[numFonts];
+		weights = new double[numFonts][10];
 		for(int i = 0;i < numFonts;i++)
-			weights[i] = 1.0 / numFonts;
+			for(int j = 0;j < weights[0].length;j++)
+				weights[i][j] = 1.0 / numFonts;
+	}
+	/** compares similarity of templates to training samples, weights more similar template more;
+	 * assumes that each Mat[] is in ascending order */
+	public void train(List<Mat[]> trains){
+		//TODO currently only works for two template sets
+		for(int i = 0;i < trains.size();i++){
+			Mat[] train_set = trains.get(i);
+			for(int j = 0;j < train_set.length;j++){
+				int diff1 = difference(templates.get(0)[j], train_set[j]);
+				int diff2 = difference(templates.get(1)[j], train_set[j]);
+				if(diff1 < diff2){
+					weights[0][j] += learningRate;
+					weights[1][j] -= learningRate;
+				} else if(diff1 > diff2){
+					weights[1][j] += learningRate;
+					weights[0][j] -= learningRate;
+				}
+			}
+		}
 	}
 	public void classify(Mat[] tests){
 		for(int i = 0;i < tests.length;i++){
@@ -29,7 +50,7 @@ public class Classifier {
 		double diff = 0;
 		for(int i = 0;i < weights.length;i++){
 			Mat tempM = templates.get(i)[index];
-			diff += weights[i]*difference(tempM, m);
+			diff += weights[i][index]*difference(tempM, m);
 		}
 		return diff;
 	}
