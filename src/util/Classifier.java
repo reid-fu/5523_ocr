@@ -7,7 +7,8 @@ public class Classifier {
 	private double[][] weights;
 	private double learningRate = .05;
 	private List<Mat[]> templates;
-	public Classifier(int numFonts){
+	public Classifier(int numFonts, List<Mat[]> templates){
+		this.templates = templates;
 		weights = new double[numFonts][10];
 		for(int i = 0;i < numFonts;i++)
 			for(int j = 0;j < weights[0].length;j++)

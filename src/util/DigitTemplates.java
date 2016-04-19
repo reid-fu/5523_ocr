@@ -8,10 +8,10 @@ import org.opencv.imgproc.Imgproc;
 import ocr_main.Std;
 
 public class DigitTemplates {
-	public static List<Mat[]> digitTemplates(boolean output1, boolean output2){
+	public static List<Mat[]> digitTemplates(String...fonts){
 		List<Mat[]> templates = new ArrayList<>();
-		templates.add(fontTemplates(output1, "calibri"));
-		templates.add(fontTemplates(output2, "times"));
+		for(int i = 0;i < fonts.length;i++)
+			templates.add(fontTemplates(false, fonts[i]));
 		return templates;
 	}
 	private static Mat[] fontTemplates(boolean output, String font){
@@ -27,7 +27,7 @@ public class DigitTemplates {
 				calibri[i*5 + j] = p.boundingRectChar(img1.submat(rowStart, rowEnd, colStart, colEnd));
 				Imgproc.resize(calibri[i*5 + j], calibri[i*5 + j], new Size(Std.STD_WIDTH, Std.STD_HEIGHT));
 				if(output)
-					Imgcodecs.imwrite("img/" + (i*5 + j) + font + ".png", calibri[i*5 + j]);
+					Imgcodecs.imwrite("debug_img/" + (i*5 + j) + font + ".png", calibri[i*5 + j]);
 			}
 		}
 		return calibri;
