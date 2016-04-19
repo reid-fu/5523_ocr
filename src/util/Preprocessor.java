@@ -1,13 +1,19 @@
 package util;
+import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.core.Range;
 
 /** Responsible for making image black and white, as well as segmenting characters */
+@SuppressWarnings("unused")
 public class Preprocessor {
 	public int[][] binarize(Mat m){
 		//TODO decide if this method is needed
 		int bin[][] = new int[m.rows()][m.cols()];
 		return bin;
+	}
+	/** @return lines of text in image represented by m, which is assumed to contain only text */
+	public Mat[] lines(Mat m){
+		return null;
 	}
 	/** @return bounding rectangle matrix of character */
 	public Mat boundingRectChar(Mat m){
@@ -50,5 +56,12 @@ public class Preprocessor {
 				if(m.get(i,j)[0] != 0)
 					count++;
 		return count;
+	}
+	/* HELPER METHODS */
+	private List<Range> blackRowRanges(Mat m){
+		return null;
+	}
+	private List<Range> blackColRanges(Mat m){
+		return null;
 	}
 }
