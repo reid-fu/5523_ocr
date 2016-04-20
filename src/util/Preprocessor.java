@@ -1,7 +1,10 @@
 package util;
+import java.util.ArrayList;
 import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.core.Range;
+
+import ocr_main.Std;
 
 /** Responsible for making image black and white, as well as segmenting characters */
 @SuppressWarnings("unused")
@@ -49,19 +52,28 @@ public class Preprocessor {
 		colEnd = (col == m.cols()) ? col : col+1;
 		return new Range(colStart, colEnd);
 	}
-	public int countNonZero(Mat m){
-		int count = 0;
-		for(int i = 0;i < m.rows();i++)
-			for(int j = 0;j < m.cols();j++)
-				if(m.get(i,j)[0] != 0)
-					count++;
-		return count;
-	}
 	/* HELPER METHODS */
 	private List<Range> blackRowRanges(Mat m){
-		return null;
+		List<Range> ranges = new ArrayList<>();
+		int rowStart = -1;
+		for(int i = 0;i < m.rows();i++)
+			if(rowStart != -1 && m.cols()-countNonZero(m.row(i)) == 0){
+				ranges.add(new Range(rowStart,i));
+				rowStart = -1;
+			} else if(rowStart == -1 && m.cols()-countNonZero(m.row(i)) != 0) {
+				rowStart = i;
+			}
+		return ranges;
 	}
 	private List<Range> blackColRanges(Mat m){
 		return null;
+	}
+	private int countNonZero(Mat m){
+		int count = 0;
+		for(int i = 0;i < m.rows();i++)
+			for(int j = 0;j < m.cols();j++)
+				if(m.get(i,j)[0] > Std.STD_THRESH)
+					count++;
+		return count;
 	}
 }

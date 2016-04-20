@@ -8,13 +8,13 @@ import org.opencv.imgproc.Imgproc;
 import ocr_main.Std;
 
 public class DigitTemplates {
-	public static List<Mat[]> digitTemplates(String...fonts){
+	public static List<Mat[]> digitTemplates(boolean output, String...fonts){
 		List<Mat[]> templates = new ArrayList<>();
 		for(int i = 0;i < fonts.length;i++)
-			templates.add(fontTemplates(false, fonts[i]));
+			templates.add(charsInFont(output, fonts[i]));
 		return templates;
 	}
-	private static Mat[] fontTemplates(boolean output, String font){
+	public static Mat[] charsInFont(boolean output, String font){
 		Mat img1 = Imgcodecs.imread("img/digits_" + font + ".png");
 		Preprocessor p = new Preprocessor();
 		Mat calibri[] = new Mat[10];
