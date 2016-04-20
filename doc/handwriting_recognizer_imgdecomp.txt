@@ -1,1 +1,10 @@
 HANDWRITING RECOGNIZER: ImgDecomp
+- ImgDecomp has collection of Line objects
+- Line has collection of Word objects
+- Word has collection of Mat objects that represent characters
+*Methods*
+- List<Line> lines()
+- List<Word> words()
+- List<Word> words(Line)
+- List<Mat> chars()
+- List<Mat> chars(Word)

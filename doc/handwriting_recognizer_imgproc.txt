@@ -1,0 +1,7 @@
+HANDWRITING RECOGNIZER: ImgProcessor
+- responsible for building ImgDecomp
+*Methods*
+- ImgDecomp processImg(Mat)
+- List<Range> blackRowRanges(Mat): used to identify and separate lines
+- ColRanges parseColRanges(Mat): used to separate words and characters
+-- ColRanges is data class to store lists of black pixel and white pixel ranges

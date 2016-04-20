@@ -1,1 +1,9 @@
 HANDWRITING RECOGNIZER: Classifier
+- input: image of character that is same size as bounding box, resized to standard size
+*Fields*
+- [{double[][] weights: }]
+- double learnRate: 
+- [{List<Mat[]> templates: }]
+*Methods*
+- [{void train(List<Mat[]>): }]
+- [{char[] classify(Mat[])}]

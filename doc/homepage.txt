@@ -10,16 +10,16 @@ HANDWRITING RECOGNIZER
 
 *Image Processing Workflow*
 - input: lines of text with no other images
-# make image black and white
+# make image [[handwriting_recognizer_preproc][black and white]]
 - convert image to grayscale
 - threshold image to make it black and white
 # decompose image into [[handwriting_recognizer_imgdecomp][line, word, and char hierarchy]]
-- separate lines by identifying row ranges of black pixels
+- [[handwriting_recognizer_imgproc][separate]] lines by identifying row ranges of black pixels
 - in each line, separate words and characters
 -- identify all black and white pixel ranges
 -- long white pixel ranges separate words
 -- short white pixel ranges separate characters (may change later)
-- normalize each char by cropping image to bounding box of char
+- normalize each char by cropping image to bounding box of char and resizing to standard size
 
 REFERENCES
 *Put in References*

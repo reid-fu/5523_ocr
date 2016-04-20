@@ -1,4 +1,4 @@
-package data;
+package img_proc;
 
 public class ImgDecomp {
 
