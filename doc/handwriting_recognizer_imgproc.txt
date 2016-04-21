@@ -1,11 +1,12 @@
 HANDWRITING RECOGNIZER: ImgProcessor
 - responsible for building ImgDecomp
+- input: text only image with single font and font type
 *Methods*
 - ImgDecomp processImg(Mat)
 -- separate chars based on contours, isolate them in their bounding boxes (see boundRect)
 -- categorize chars into separate lines (see separateLines)
--- get stats for spacing between chars
--- separate chars into words based on longer spacings
+-- get spacing between chars and between words from first line (see spaceBetween)
+-- for each line, group chars in line into words (see buildDecomp)
 
 - List<Rect> boundRect(Mat)
 -- call contours(Mat)
@@ -16,8 +17,7 @@ HANDWRITING RECOGNIZER: ImgProcessor
 -- call Imgproc.findContours()
 
 - Map<Range,List<Rect>> separateLines(List<Rect>)
--- get each Rect's vertical range
--- combine ranges that overlap
-- Range overlapRangeInSet(Range, Set<Range>)
--- overlap means one range's start is between other's start and end
-- Range rangeUnion(Range, Range)
+-- for each rect, get its vertical range
+-- find vertical range in map that [[handwriting_recognizer_rangeutil][overlaps this range]]
+- [{int[] spaceBetween(List<Rect>): returns {[0] = space between chars, [1] = between words}}]
+- [{ImgDecomp buildDecomp(Map<Range,List<Rect>>, int[])}]

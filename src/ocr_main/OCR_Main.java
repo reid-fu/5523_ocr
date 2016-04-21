@@ -8,7 +8,7 @@ import java.util.List;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import img_proc.ImgProcessor;
+import img_proc.*;
 import util.*;
 
 public class OCR_Main {
@@ -32,9 +32,9 @@ public class OCR_Main {
 		for (String actualAngle : actualAngles) {
 			Mat img = Imgcodecs.imread("img/skewed"+actualAngle+".jpg", Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
 			//double angle = ImgProcessor.compute_skew("img/skewed"+angle+".jpg", "img/final_skewed"+angle+".jpg");
-			double calcdAngle = ImgProcessor.compute_skew(img);
+			double calcdAngle = SkewProcessor.compute_skew(img);
 			// TODO: debug!
-			Mat unskewed = ImgProcessor.deskew(img, calcdAngle);
+			Mat unskewed = SkewProcessor.deskew(img, calcdAngle);
 			Imgcodecs.imwrite("img/unskewed"+actualAngle+".jpg", unskewed);
 		}
 	}
