@@ -28,6 +28,15 @@ public class OCR_Main {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
+		String[] actualAngles = {"16", "24", "3", "-20", "-8"};
+		for (String actualAngle : actualAngles) {
+			Mat img = Imgcodecs.imread("img/skewed"+actualAngle+".jpg", Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
+			//double angle = ImgProcessor.compute_skew("img/skewed"+angle+".jpg", "img/final_skewed"+angle+".jpg");
+			double calcdAngle = ImgProcessor.compute_skew(img);
+			// TODO: debug!
+			Mat unskewed = ImgProcessor.deskew(img, calcdAngle);
+			Imgcodecs.imwrite("img/unskewed"+actualAngle+".jpg", unskewed);
+		}
 	}
 	public static Mat[] testSet(boolean output){
 		Mat img = Imgcodecs.imread("img/digits_test.png");
