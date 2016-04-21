@@ -9,7 +9,7 @@ public class OCR_Main {
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		List<Mat[]> templates = DigitTemplates.digitTemplates(false, "calibri", "times");
-		List<Mat[]> trainSets = Trainer.digitTrainSets(true, "arial", "consolas", "verdana");
+		List<Mat[]> trainSets = Trainer.digitTrainSets(false, "arial", "consolas", "verdana");
 		Classifier c = new Classifier(2, templates);
 		c.train(trainSets);
 		Mat[] tests = DigitTemplates.charsInFont(false, "courier");
