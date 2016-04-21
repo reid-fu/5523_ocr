@@ -3,6 +3,7 @@ import java.util.List;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import img_proc.ImgProcessor;
 import util.*;
 
 public class OCR_Main {
@@ -17,7 +18,7 @@ public class OCR_Main {
 	}
 	public static Mat[] testSet(boolean output){
 		Mat img = Imgcodecs.imread("img/digits_test.png");
-		Preprocessor p = new Preprocessor();
+		ImgProcessor p = new ImgProcessor();
 		Mat set[] = new Mat[10];
 		for(int i = 0;i < set.length;i++){
 			int colStart = img.cols() * i/10;

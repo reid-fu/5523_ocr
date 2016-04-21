@@ -5,6 +5,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+import img_proc.ImgProcessor;
 import ocr_main.Std;
 
 public class DigitTemplates {
@@ -16,7 +17,7 @@ public class DigitTemplates {
 	}
 	public static Mat[] charsInFont(boolean output, String font){
 		Mat img1 = Imgcodecs.imread("img/digits_" + font + ".png");
-		Preprocessor p = new Preprocessor();
+		ImgProcessor p = new ImgProcessor();
 		Mat calibri[] = new Mat[10];
 		for(int i = 0;i < 2;i++){
 			for(int j = 0;j < 5;j++){

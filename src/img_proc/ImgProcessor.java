@@ -1,23 +1,17 @@
-package util;
+package img_proc;
 import java.util.ArrayList;
 import java.util.List;
 import org.opencv.core.Mat;
 import org.opencv.core.Range;
-
 import ocr_main.Std;
 
 /** Responsible for making image black and white, as well as segmenting characters */
 @SuppressWarnings("unused")
-public class Preprocessor {
-	public int[][] binarize(Mat m){
-		//TODO decide if this method is needed
-		int bin[][] = new int[m.rows()][m.cols()];
-		return bin;
-	}
-	/** @return lines of text in image represented by m, which is assumed to contain only text */
-	public Mat[] lines(Mat m){
+public class ImgProcessor {
+	public ImgDecomp processImg(Mat m){
 		return null;
 	}
+	
 	/** @return bounding rectangle matrix of character */
 	public Mat boundingRectChar(Mat m){
 		Range rowRange = rowRangeBlack(m);
