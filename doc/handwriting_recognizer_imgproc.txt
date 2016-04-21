@@ -2,6 +2,14 @@ HANDWRITING RECOGNIZER: ImgProcessor
 - responsible for building ImgDecomp
 *Methods*
 - ImgDecomp processImg(Mat)
-- List<Range> blackRowRanges(Mat): used to identify and separate lines
-- ColRanges parseColRanges(Mat): used to separate words and characters
--- ColRanges is data class to store lists of black pixel and white pixel ranges
+-- call boundRect(Mat)
+-- get lines based on vertical ranges of bounding rectangles, assign chars to lines
+-- get stats for spacing between chars
+-- separate chars into words based on longer spacings
+- List<Rect> boundRect(Mat)
+-- call contours(Mat)
+-- call Imgproc.boundingRect()
+- List<MatOfPoint> contours(Mat)
+-- call Imgproc.threshold()
+-- call Mat.convertTo(Mat, 8UC1)
+-- call Imgproc.findContours()

@@ -1,17 +1,37 @@
 package img_proc;
 import java.util.ArrayList;
 import java.util.List;
-import org.opencv.core.Mat;
-import org.opencv.core.Range;
+import org.opencv.core.*;
+import org.opencv.imgproc.Imgproc;
+
 import ocr_main.Std;
 
 /** Responsible for making image black and white, as well as segmenting characters */
 @SuppressWarnings("unused")
 public class ImgProcessor {
 	public ImgDecomp processImg(Mat m){
+		//call boundRect(Mat)
+		//get lines based on vertical ranges of bounding rectangles, assign chars to lines 
+		//get stats for spacing between chars 
+		//separate chars into words based on longer spacings 
 		return null;
 	}
+	public List<Rect> boundRects(Mat m){
+		List<Rect> rects = new ArrayList<>();
+		for(MatOfPoint mat_pt : contours(m))
+			rects.add(Imgproc.boundingRect(mat_pt));
+		return rects;
+	}
+	public List<MatOfPoint> contours(Mat m){
+		Mat m2 = new Mat(m.rows(), m.cols(), m.type());
+		Imgproc.threshold(m, m2, 0, 255, Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_OTSU);
+		m2.convertTo(m2, CvType.CV_8UC1);
+		List<MatOfPoint> contours = new ArrayList<>();
+		Imgproc.findContours(m2, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
+		return contours;
+	}
 	
+	//TODO obsolete
 	/** @return bounding rectangle matrix of character */
 	public Mat boundingRectChar(Mat m){
 		Range rowRange = rowRangeBlack(m);

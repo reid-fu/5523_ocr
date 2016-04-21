@@ -7,6 +7,11 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Tools/Lib/AI/opencv/build/java"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/opencv"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/opencv">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="5523_ocr/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/opencv-310.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
