@@ -1,11 +1,8 @@
 package img_proc;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-
 import ocr_main.Std;
 
 /** Responsible for making image black and white, as well as segmenting characters */
@@ -13,10 +10,9 @@ import ocr_main.Std;
 public class ImgProcessor {
 	public ImgDecomp processImg(Mat m){
 		// TODO: debug!
-		double skewAngle = ImgProcessor.compute_skew(m);
-		Mat unskewed = ImgProcessor.deskew(m, skewAngle);
+//		double skewAngle = ImgProcessor.compute_skew(m);
+//		Mat unskewed = ImgProcessor.deskew(m, skewAngle);
 		
-		//call boundRect(Mat)
 		List<Rect> rects = boundRects(m);
 		//get lines based on vertical ranges of bounding rectangles, assign chars to lines
 		boolean[] black = new boolean[m.rows()];
@@ -28,6 +24,7 @@ public class ImgProcessor {
 		// TODO: Hough
 		return null;
 	}
+	
 	public List<Rect> boundRects(Mat m){
 		List<Rect> rects = new ArrayList<>();
 		for(MatOfPoint mat_pt : contours(m))
@@ -36,12 +33,36 @@ public class ImgProcessor {
 	}
 	public List<MatOfPoint> contours(Mat m){
 		Mat m2 = new Mat(m.rows(), m.cols(), m.type());
+		if(m.channels() > 1)
+			Imgproc.cvtColor(m, m, Imgproc.COLOR_RGB2GRAY);
 		Imgproc.threshold(m, m2, 0, 255, Imgproc.THRESH_BINARY_INV + Imgproc.THRESH_OTSU);
 		m2.convertTo(m2, CvType.CV_8UC1);
 		List<MatOfPoint> contours = new ArrayList<>();
 		Imgproc.findContours(m2, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
 		return contours;
 	}
+	
+	public Map<Range,List<Rect>> separateLines(List<Rect> rects){
+		Map<Range,List<Rect>> lines = new TreeMap<>(new Comparator<Range>(){
+			@Override
+			public int compare(Range arg0, Range arg1) {
+				return arg0.start - arg1.start;
+			}
+		});
+		for(Rect rect : rects){
+			Range r = new Range(rect.y, rect.y + rect.height);
+			Range r2 = overlapRangeInSet(r, lines.keySet());
+		}
+		return lines;
+	}
+	/** @return first Range in set that overlaps with r */
+	public Range overlapRangeInSet(Range r, Set<Range> set){
+		for(Range r2 : set)
+			if((r.start > r2.start && r.start < r2.end) || (r2.start > r.start && r2.start < r.end))
+				return r2;
+		return null;
+	}
+	
 	
 	/*
 	void compute_skew(const char* filename)

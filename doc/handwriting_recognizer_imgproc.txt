@@ -2,10 +2,11 @@ HANDWRITING RECOGNIZER: ImgProcessor
 - responsible for building ImgDecomp
 *Methods*
 - ImgDecomp processImg(Mat)
--- call boundRect(Mat)
--- get lines based on vertical ranges of bounding rectangles, assign chars to lines
+-- separate chars based on contours, isolate them in their bounding boxes (see boundRect)
+-- categorize chars into separate lines (see separateLines)
 -- get stats for spacing between chars
 -- separate chars into words based on longer spacings
+
 - List<Rect> boundRect(Mat)
 -- call contours(Mat)
 -- call Imgproc.boundingRect()
@@ -13,3 +14,10 @@ HANDWRITING RECOGNIZER: ImgProcessor
 -- call Imgproc.threshold()
 -- call Mat.convertTo(Mat, 8UC1)
 -- call Imgproc.findContours()
+
+- Map<Range,List<Rect>> separateLines(List<Rect>)
+-- get each Rect's vertical range
+-- combine ranges that overlap
+- Range overlapRangeInSet(Range, Set<Range>)
+-- overlap means one range's start is between other's start and end
+- Range rangeUnion(Range, Range)
