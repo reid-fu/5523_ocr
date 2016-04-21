@@ -1,4 +1,5 @@
 package util;
+import java.io.PrintStream;
 import java.util.List;
 import org.opencv.core.Mat;
 import ocr_main.Std;
@@ -33,7 +34,11 @@ public class Classifier {
 			}
 		}
 	}
-	public void classify(Mat[] tests){
+	public char[] classify(Mat[] tests){
+		return classify(tests, System.out);
+	}
+	public char[] classify(Mat[] tests, PrintStream out){
+		char[] ret = new char[tests.length];
 		for(int i = 0;i < tests.length;i++){
 			int minIndex = 0;
 			double minDiff = Double.POSITIVE_INFINITY;
@@ -44,19 +49,25 @@ public class Classifier {
 					minIndex = j;
 				}
 			}
-			System.out.println(minIndex);
+			out.println(minIndex);
+			ret[i] = (char) ((char) minIndex + '0');
 		}
+		return ret;
 	}
 	public double weight_diff(int index, Mat m){
-		double diff = 0;
-		for(int i = 0;i < weights.length;i++){
-			Mat tempM = templates.get(i)[index];
-			diff += weights[i][index]*difference(tempM, m);
+		double sumDiff = 0;
+		for(int t = 0;t < weights.length;t++){
+			Mat tempM = templates.get(t)[index];
+			int diff = difference(tempM, m);
+			if (diff == 0) {
+				return 0; // exact match!
+			}
+			sumDiff += weights[t][index]*diff;
 		}
-		return diff;
+		return sumDiff;
 	}
 	/** assumes m1 and m2 are same size */
-	public int difference(Mat m1, Mat m2){
+	public int difference(Mat m1, Mat m2){ 
 		int diff = 0;
 		for(int i = 0;i < m1.rows();i++)
 			for(int j = 0;j < m1.cols();j++){

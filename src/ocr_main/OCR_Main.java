@@ -1,4 +1,9 @@
 package ocr_main;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -14,7 +19,15 @@ public class OCR_Main {
 		Classifier c = new Classifier(2, templates);
 		c.train(trainSets);
 		Mat[] tests = DigitTemplates.charsInFont(false, "courier");
-		c.classify(tests);
+		String fileName = new SimpleDateFormat("yyyyMMddhhmm'.txt'").format(new Date());
+		File fileOut = new File(fileName);
+		PrintStream out;
+		try {
+			out = new PrintStream(fileOut);
+			c.classify(tests, out);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 	public static Mat[] testSet(boolean output){
 		Mat img = Imgcodecs.imread("img/digits_test.png");
