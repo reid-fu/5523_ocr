@@ -7,7 +7,7 @@ public class ImgProcessTest {
 	public static void main(String[] args) {
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 		ImgProcessor processor = new ImgProcessor();
-		Mat m = Imgcodecs.imread("img/digits_arial.png");
+		Mat m = Imgcodecs.imread("img/tests/quick_fox.png");
 		ImgDecomp decomp = processor.processImg(m);
 		System.out.println(decomp);
 	}

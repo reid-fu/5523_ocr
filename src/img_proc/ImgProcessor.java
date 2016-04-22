@@ -1,13 +1,11 @@
 package img_proc;
 import java.util.*;
 import org.opencv.core.*;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import ocr_main.Std;
 import util.RangeUtil;
 
 /** Responsible for making image black and white, as well as segmenting characters */
-@SuppressWarnings("unused")
 public class ImgProcessor {
 	public ImgDecomp processImg(Mat m){
 		// TODO: debug!
@@ -16,6 +14,11 @@ public class ImgProcessor {
 		
 		List<Rect> rects = boundRects(m);
 		Map<Range,List<Rect>> lines = separateLines(rects);
+//		int i = 0; //FOR DEBUGGING PURPOSES
+//		for(Rect r : lines.get(lines.keySet().iterator().next())){
+//			Imgcodecs.imwrite("debug_img/" + i + ".png", m.submat(r));
+//			i++;
+//		}
 		int[] spaceBetween = this.spaceBetween(lines.get(lines.keySet().iterator().next()));
 		// TODO: Hough
 		return this.buildDecomp(lines, spaceBetween);
@@ -37,14 +40,9 @@ public class ImgProcessor {
 		Imgproc.findContours(m2, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_NONE);
 		return contours;
 	}
-	
+	/** each line will have chars listed left to right */
 	public Map<Range,List<Rect>> separateLines(List<Rect> rects){
-		Map<Range,List<Rect>> lines = new TreeMap<>(new Comparator<Range>(){
-			@Override
-			public int compare(Range arg0, Range arg1) {
-				return arg0.start - arg1.start;
-			}
-		});
+		Map<Range,List<Rect>> lines = new TreeMap<>(rangeComparator());
 		for(Rect rect : rects){
 			Range r = new Range(rect.y, rect.y + rect.height);
 			Range r2 = RangeUtil.overlapRangeInSet(r, lines.keySet());
@@ -59,12 +57,41 @@ public class ImgProcessor {
 				lines.put(ru, list);
 			}
 		}
+		this.sortLines(lines);
 		return lines;
 	}
+	private void sortLines(Map<Range,List<Rect>> lines){
+		lines.replaceAll((k,v) -> { v.sort(rectComparator()); return v; });
+	}
+	private Comparator<Range> rangeComparator(){
+		return new Comparator<Range>(){
+			@Override
+			public int compare(Range arg0, Range arg1) {
+				return arg0.start - arg1.start;
+			}
+		};
+	}
+	private Comparator<Rect> rectComparator(){
+		return new Comparator<Rect>(){
+			@Override
+			public int compare(Rect arg0, Rect arg1) {
+				return arg0.x - arg1.x;
+			}
+		};
+	}
+	/** assumes rects is in order of left to right */
 	public int[] spaceBetween(List<Rect> rects){
 		int[] spaceBetween = new int[]{-1, -1};
-//		Map
-//		for()
+		Map<Integer,Integer> spaceCounts = new HashMap<>();
+		for(int i = 0;i < rects.size()-1;i++){
+			Rect r1 = rects.get(i), r2 = rects.get(i+1);
+			int space = r2.x - (r1.x + r1.width);
+			if(spaceCounts.containsKey(space)){
+				spaceCounts.put(space, spaceCounts.remove(space) + 1);
+			} else {
+				spaceCounts.put(space, 1);
+			}
+		}
 		return spaceBetween;
 	}
 	public ImgDecomp buildDecomp(Map<Range,List<Rect>> lines, int[] spaceBetween){
@@ -107,21 +134,6 @@ public class ImgProcessor {
 		return new Range(colStart, colEnd);
 	}
 	/* HELPER METHODS */
-	private List<Range> blackRowRanges(Mat m){
-		List<Range> ranges = new ArrayList<>();
-		int rowStart = -1;
-		for(int i = 0;i < m.rows();i++)
-			if(rowStart != -1 && m.cols()-countNonZero(m.row(i)) == 0){
-				ranges.add(new Range(rowStart,i));
-				rowStart = -1;
-			} else if(rowStart == -1 && m.cols()-countNonZero(m.row(i)) != 0) {
-				rowStart = i;
-			}
-		return ranges;
-	}
-	private List<Range> blackColRanges(Mat m){
-		return null;
-	}
 	private int countNonZero(Mat m){
 		int count = 0;
 		for(int i = 0;i < m.rows();i++)

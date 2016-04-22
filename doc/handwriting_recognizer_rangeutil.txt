@@ -1,0 +1,6 @@
+HANDWRITING RECOGNIZER: RangeUtil
+- utility methods for Range objects
+*Methods*
+- Range overlapRangeInSet(Range, Set<Range>)
+-- overlap means one range's start is between other's start and end
+- Range rangeUnion(Range, Range)
