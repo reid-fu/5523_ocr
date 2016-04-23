@@ -2,8 +2,9 @@ package img_proc;
 import java.util.*;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
+import img_proc.ImgDecomp.*;
 import ocr_main.Std;
-import util.RangeUtil;
+import util.*;
 
 /** Responsible for making image black and white, as well as segmenting characters */
 public class ImgProcessor {
@@ -11,19 +12,17 @@ public class ImgProcessor {
 		// TODO: debug!
 //		double skewAngle = ImgProcessor.compute_skew(m);
 //		Mat unskewed = ImgProcessor.deskew(m, skewAngle);
-		
 		List<Rect> rects = boundRects(m);
 		Map<Range,List<Rect>> lines = separateLines(rects);
+		SpaceStats spaceStats = processSpaces(lines.get(lines.keySet().iterator().next()));
 //		int i = 0; //FOR DEBUGGING PURPOSES
 //		for(Rect r : lines.get(lines.keySet().iterator().next())){
 //			Imgcodecs.imwrite("debug_img/" + i + ".png", m.submat(r));
 //			i++;
 //		}
-		int[] spaceBetween = this.spaceBetween(lines.get(lines.keySet().iterator().next()));
 		// TODO: Hough
-		return this.buildDecomp(lines, spaceBetween);
+		return this.buildDecomp(lines, spaceStats);
 	}
-	
 	public List<Rect> boundRects(Mat m){
 		List<Rect> rects = new ArrayList<>();
 		for(MatOfPoint mat_pt : contours(m))
@@ -42,7 +41,7 @@ public class ImgProcessor {
 	}
 	/** each line will have chars listed left to right */
 	public Map<Range,List<Rect>> separateLines(List<Rect> rects){
-		Map<Range,List<Rect>> lines = new TreeMap<>(rangeComparator());
+		Map<Range,List<Rect>> lines = new TreeMap<>(CompareUtil.rangeComparator());
 		for(Rect rect : rects){
 			Range r = new Range(rect.y, rect.y + rect.height);
 			Range r2 = RangeUtil.overlapRangeInSet(r, lines.keySet());
@@ -57,45 +56,49 @@ public class ImgProcessor {
 				lines.put(ru, list);
 			}
 		}
-		this.sortLines(lines);
+		lines.replaceAll((k,v) -> { v.sort(CompareUtil.rectComparator()); return v; });
 		return lines;
 	}
-	private void sortLines(Map<Range,List<Rect>> lines){
-		lines.replaceAll((k,v) -> { v.sort(rectComparator()); return v; });
-	}
-	private Comparator<Range> rangeComparator(){
-		return new Comparator<Range>(){
-			@Override
-			public int compare(Range arg0, Range arg1) {
-				return arg0.start - arg1.start;
-			}
-		};
-	}
-	private Comparator<Rect> rectComparator(){
-		return new Comparator<Rect>(){
-			@Override
-			public int compare(Rect arg0, Rect arg1) {
-				return arg0.x - arg1.x;
-			}
-		};
-	}
-	/** assumes rects is in order of left to right */
-	public int[] spaceBetween(List<Rect> rects){
-		int[] spaceBetween = new int[]{-1, -1};
-		Map<Integer,Integer> spaceCounts = new HashMap<>();
+	/** assumes rects is in order of left to right;
+	 * combines rects if necessary (e.g. dot and body of i) */
+	public SpaceStats processSpaces(List<Rect> rects){
+		SpaceStats stats = new SpaceStats();
 		for(int i = 0;i < rects.size()-1;i++){
 			Rect r1 = rects.get(i), r2 = rects.get(i+1);
 			int space = r2.x - (r1.x + r1.width);
-			if(spaceCounts.containsKey(space)){
-				spaceCounts.put(space, spaceCounts.remove(space) + 1);
+			if(space < 0){ //characters overlap horizontally --> combine
+				int left = Math.min(r1.x, r2.x), top = Math.min(r1.y, r2.y);
+				int right = Math.max(r1.x + r1.width, r2.x + r2.width);
+				int bottom = Math.max(r1.y + r1.height, r2.y + r2.height);
+				Rect r3 = new Rect(left, top, right - left, bottom - top);
+				rects.remove(i+1); rects.remove(i);
+				rects.add(i, r3);
+				i--;
 			} else {
-				spaceCounts.put(space, 1);
+				stats.addSpace(space);
 			}
 		}
-		return spaceBetween;
+		stats.updateSepSpaces(); //TODO implement this method
+		return stats;
 	}
-	public ImgDecomp buildDecomp(Map<Range,List<Rect>> lines, int[] spaceBetween){
-		return null;
+	public ImgDecomp buildDecomp(Map<Range,List<Rect>> lines, SpaceStats spaceStats){
+		ImgDecomp decomp = new ImgDecomp();
+		for(Range range : lines.keySet()){
+			Line l = decomp.new Line();
+			List<Rect> line = lines.get(range);
+			Word word = decomp.new Word();
+			word.chars.add(line.get(0));
+			for(int i = 1;i < line.size()-1;i++){
+				Rect r1 = word.lastChar(), r2 = line.get(i);
+				int space = r2.x - (r1.x + r1.width);
+				if(spaceStats.spaceCat(space) == SpaceStats.WORD_SEP){
+					l.words.add(word);
+					word = decomp.new Word();
+				}
+				word.chars.add(r2);
+			}
+		}
+		return decomp;
 	}
 	
 	//TODO obsolete

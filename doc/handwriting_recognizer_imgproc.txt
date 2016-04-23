@@ -19,5 +19,7 @@ HANDWRITING RECOGNIZER: ImgProcessor
 - Map<Range,List<Rect>> separateLines(List<Rect>)
 -- for each rect, get its vertical range
 -- find vertical range in map that [[handwriting_recognizer_rangeutil][overlaps this range]]
+-- range or combined range represents line depending on whether it was in map
+-- sort chars in line at the end
 - [{int[] spaceBetween(List<Rect>): returns {[0] = space between chars, [1] = between words}}]
 - [{ImgDecomp buildDecomp(Map<Range,List<Rect>>, int[])}]
