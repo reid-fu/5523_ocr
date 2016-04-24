@@ -10,7 +10,7 @@ public class Classifier {
 	private List<Mat[]> templates;
 	public Classifier(int numFonts, List<Mat[]> templates){
 		this.templates = templates;
-		weights = new double[numFonts][10];
+		weights = new double[numFonts][templates.get(0).length];
 		for(int i = 0;i < numFonts;i++)
 			for(int j = 0;j < weights[0].length;j++)
 				weights[i][j] = 1.0 / numFonts;

@@ -7,8 +7,33 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import img_proc.ImgProcessor;
 import ocr_main.Std;
+import util.Chars74Util;
 
 public class Trainer {
+	private static int[] train_nums = new int[]{21, 41, 65, 101, 141};
+	public static List<Mat[]> trainSets(){
+		List<Mat[]> trainSets = new ArrayList<>();
+		for(char c = '0';c <= '9';c++){
+			loadTrainSets(c, trainSets);
+		}
+		for(char c = 'A';c <= 'Z';c++){
+			loadTrainSets(c, trainSets);
+		}
+		for(char c = 'a';c <= 'z';c++){
+			loadTrainSets(c, trainSets);
+		}
+		return trainSets;
+	}
+	private static void loadTrainSets(char c, List<Mat[]> templates){
+		Mat[] charTemps = new Mat[train_nums.length];
+		for(int i = 0;i < train_nums.length;i++){
+			Mat img = Chars74Util.getStdImg(c, train_nums[i]);
+			charTemps[i] = img;
+		}
+		templates.add(charTemps);
+	}
+	
+	//TODO: obsolete
 	public static List<Mat[]> digitTrainSets(boolean output, String...fonts){
 		List<Mat[]> sets = new ArrayList<>();
 		for(int i = 0;i < fonts.length;i++)
