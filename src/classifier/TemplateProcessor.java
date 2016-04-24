@@ -7,8 +7,33 @@ import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import img_proc.ImgProcessor;
 import ocr_main.Std;
+import util.Chars74Util;
 
-public class DigitTemplates {
+public class TemplateProcessor {
+	private static int[] template_nums = new int[]{1, 17, 29};
+	public static List<Mat[]> templates(){
+		List<Mat[]> templates = new ArrayList<>();
+		for(char c = '0';c <= '9';c++){
+			loadTemplates(c, templates);
+		}
+		for(char c = 'A';c <= 'Z';c++){
+			loadTemplates(c, templates);
+		}
+		for(char c = 'a';c <= 'z';c++){
+			loadTemplates(c, templates);
+		}
+		return templates;
+	}
+	private static void loadTemplates(char c, List<Mat[]> templates){
+		Mat[] charTemps = new Mat[template_nums.length];
+		for(int i = 0;i < template_nums.length;i++){
+			Mat img = Chars74Util.getStdImg(c, template_nums[i]);
+			charTemps[i] = img;
+		}
+		templates.add(charTemps);
+	}
+	
+	//TODO: obsolete
 	public static List<Mat[]> digitTemplates(boolean output, String...fonts){
 		List<Mat[]> templates = new ArrayList<>();
 		for(int i = 0;i < fonts.length;i++)
