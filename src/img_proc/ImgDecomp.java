@@ -29,11 +29,17 @@ public class ImgDecomp {
 	}
 	public class Line {
 		protected List<Word> words = new ArrayList<>();
+		public String toString(){
+			return words.toString();
+		}
 	}
 	public class Word {
 		protected List<Rect> chars = new ArrayList<>();
 		public Rect lastChar(){
 			return chars.get(chars.size()-1);
+		}
+		public String toString(){
+			return chars.toString();
 		}
 	}
 }

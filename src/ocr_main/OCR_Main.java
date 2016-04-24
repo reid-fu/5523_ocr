@@ -8,6 +8,10 @@ import java.util.List;
 import org.opencv.core.*;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
+
+import classifier.Classifier;
+import classifier.DigitTemplates;
+import classifier.Trainer;
 import img_proc.*;
 import util.*;
 

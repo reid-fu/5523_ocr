@@ -78,7 +78,7 @@ public class ImgProcessor {
 				stats.addSpace(space);
 			}
 		}
-		stats.updateSepSpaces(); //TODO implement this method
+		stats.updateSepSpaces();
 		return stats;
 	}
 	public ImgDecomp buildDecomp(Map<Range,List<Rect>> lines, SpaceStats spaceStats){
@@ -88,7 +88,7 @@ public class ImgProcessor {
 			List<Rect> line = lines.get(range);
 			Word word = decomp.new Word();
 			word.chars.add(line.get(0));
-			for(int i = 1;i < line.size()-1;i++){
+			for(int i = 1;i < line.size();i++){
 				Rect r1 = word.lastChar(), r2 = line.get(i);
 				int space = r2.x - (r1.x + r1.width);
 				if(spaceStats.spaceCat(space) == SpaceStats.WORD_SEP){
@@ -96,7 +96,10 @@ public class ImgProcessor {
 					word = decomp.new Word();
 				}
 				word.chars.add(r2);
+				if(i == line.size()-1)
+					l.words.add(word);
 			}
+		decomp.lines.add(l);
 		}
 		return decomp;
 	}
