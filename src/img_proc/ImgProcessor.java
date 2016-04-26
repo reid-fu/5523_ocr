@@ -9,12 +9,12 @@ import util.*;
 
 /** Responsible for making image black and white, as well as segmenting characters */
 public class ImgProcessor {
-	public ImgDecomp processImg(Mat m){
+	public static ImgDecomp processImg(Mat m){
 		// TODO: debug!
 //		double skewAngle = ImgProcessor.compute_skew(m);
 //		Mat unskewed = ImgProcessor.deskew(m, skewAngle);
-		Preprocessor preproc = new Preprocessor();
-		List<Rect> rects = preproc.boundRects(m);
+		//Preprocessor preproc = new Preprocessor();
+		List<Rect> rects = Preprocessor.boundRects(m);
 		Map<Range,List<Rect>> lines = separateLines(rects);
 		SpaceStats spaceStats = processSpaces(lines.get(lines.keySet().iterator().next()));
 //		int i = 0; //FOR DEBUGGING PURPOSES
@@ -23,10 +23,10 @@ public class ImgProcessor {
 //			i++;
 //		}
 		// TODO: Hough
-		return this.buildDecomp(m, lines, spaceStats);
+		return buildDecomp(m, lines, spaceStats);
 	}
 	/** each line will have chars listed left to right */
-	public Map<Range,List<Rect>> separateLines(List<Rect> rects){
+	public static Map<Range,List<Rect>> separateLines(List<Rect> rects){
 		Map<Range,List<Rect>> lines = new TreeMap<>(CompareUtil.rangeComparator());
 		for(Rect rect : rects){
 			Range r = new Range(rect.y, rect.y + rect.height);
@@ -47,7 +47,7 @@ public class ImgProcessor {
 	}
 	/** assumes rects is in order of left to right;
 	 * combines rects if necessary (e.g. dot and body of i) */
-	public SpaceStats processSpaces(List<Rect> rects){
+	public static SpaceStats processSpaces(List<Rect> rects){
 		SpaceStats stats = new SpaceStats();
 		for(int i = 0;i < rects.size()-1;i++){
 			Rect r1 = rects.get(i), r2 = rects.get(i+1);
@@ -67,7 +67,7 @@ public class ImgProcessor {
 		stats.updateSepSpaces();
 		return stats;
 	}
-	public ImgDecomp buildDecomp(Mat origImg, Map<Range,List<Rect>> lines, SpaceStats spaceStats){
+	public static ImgDecomp buildDecomp(Mat origImg, Map<Range,List<Rect>> lines, SpaceStats spaceStats){
 		ImgDecomp decomp = new ImgDecomp(origImg);
 		for(Range range : lines.keySet()){
 			Line l = decomp.new Line();

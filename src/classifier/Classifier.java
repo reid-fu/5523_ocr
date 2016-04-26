@@ -63,14 +63,14 @@ public class Classifier {
 				}
 			}
 			char clazz = minIndexToChar(minIndex);
-			out.println(clazz);
+			out.println(clazz + " " + minDiff);
 			ret[i] = clazz;
 		}
 		return ret;
 	}
 	private char minIndexToChar(int minIndex){
-		return (minIndex < 11) ? (char)(minIndex + '0') :
-			((minIndex < 37) ? (char)(minIndex - 11 + 'A') : (char)(minIndex - 37 + 'a'));
+		return (minIndex < 10) ? (char)(minIndex + '0') :
+			((minIndex < 36) ? (char)(minIndex - 10 + 'A') : (char)(minIndex - 36 + 'a'));
 	}
 	public double weight_diff(int index, Mat m){
 		double sumDiff = 0;
@@ -85,14 +85,15 @@ public class Classifier {
 		return sumDiff;
 	}
 	/** assumes m1 and m2 are same size */
-	public int difference(Mat m1, Mat m2){ 
+	public int difference(Mat m1, Mat m2){
 		int diff = 0;
 		for(int i = 0;i < m1.rows();i++)
 			for(int j = 0;j < m1.cols();j++){
 				double m1_e = m1.get(i,j)[0];
 				double m2_e = m2.get(i,j)[0];
 				int thresh = Std.STD_THRESH;
-				if((m1_e > thresh && m2_e <= thresh) || (m1_e <= thresh && m2_e > thresh))
+				//if((m1_e > thresh && m2_e <= thresh) || (m1_e <= thresh && m2_e > thresh))
+				if((m1_e > thresh) != (m2_e > thresh))
 					diff++;
 			}
 		return diff;

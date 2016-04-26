@@ -22,8 +22,8 @@ public class OCR_Main {
 		c.train(trainSets);
 		
 		Mat test = Imgcodecs.imread("img/tests/quick_fox.png");
-		ImgProcessor processor = new ImgProcessor();
-		ImgDecomp decomp = processor.processImg(test);
+		//ImgProcessor processor = new ImgProcessor();
+		ImgDecomp decomp = ImgProcessor.processImg(test);
 		List<Mat> tests = decomp.charImgs();
 		String fileName = new SimpleDateFormat("yyyyMMddhhmm'.txt'").format(new Date());
 		File fileOut = new File(fileName);
