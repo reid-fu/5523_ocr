@@ -26,12 +26,14 @@ REFERENCES
 - each pixel as feature, make matrix 28x28 == 784 features
 
 *Put in References*
+- [http://www.wseas.us/e-library/conferences/athens2000/Papers2000/491.pdf] segmentation techniques
 - [https://arxiv.org/ftp/arxiv/papers/1211/1211.4385.pdf] workflow and potential features
 - [http://www.ele.uri.edu/~hansenj/projects/ele585/OCR/OCR.pdf] workflow and potential features
 - [https://pdfs.semanticscholar.org/a5bf/df3dbf2e8a72bf0e3b514f2b0efb6002560d.pdf] template--based approach to handwriting recognition
+- [http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_ml/py_knn/py_knn_opencv/py_knn_opencv.html] k nearest neighbors in OCR
+- [http://users.iit.demokritos.gr/~bgat/3337a525.pdf] k means in OCR
+- [http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6063290&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D6063290] HMM with K means for Handwriting Recognition
 - [http://www.ee.surrey.ac.uk/CVSSP/demos/chars74k/] source of datasets
 
 *Potentially Helpful*
-- [http://users.iit.demokritos.gr/~bgat/3337a525.pdf] Complete OCR Method for Hist Docs
-- [http://ieeexplore.ieee.org/xpl/login.jsp?tp=&arnumber=6063290&url=http%3A%2F%2Fieeexplore.ieee.org%2Fxpls%2Fabs_all.jsp%3Farnumber%3D6063290] HMM with K means for Handwriting Recognition
 - [http://proquest.safaribooksonline.com.proxy.lib.ohio-state.edu/9781849517829?tocview=true] Mastering OpenCV with Practical Computer Vision Projects

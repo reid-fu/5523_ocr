@@ -6,63 +6,81 @@ import ocr_main.Std;
 
 public class Classifier {
 	private double[][] weights;
-	private double learningRate = .05;
+	private double learnRate = .05;
 	private List<Mat[]> templates;
-	public Classifier(int numFonts, List<Mat[]> templates){
+	/** templates should have one row for each possible character;
+	 * each row should contain templates for associated character */
+	public Classifier(List<Mat[]> templates){
 		this.templates = templates;
-		weights = new double[numFonts][templates.get(0).length];
-		for(int i = 0;i < numFonts;i++)
+		weights = new double[templates.size()][templates.get(0).length];
+		for(int i = 0;i < weights.length;i++)
 			for(int j = 0;j < weights[0].length;j++)
-				weights[i][j] = 1.0 / numFonts;
+				weights[i][j] = 1.0 / weights[0].length;
 	}
 	/** compares similarity of templates to training samples, weights more similar template more;
 	 * assumes that each Mat[] is in ascending order */
-	public void train(List<Mat[]> trains){
-		//TODO currently only works for two template sets
-		for(int i = 0;i < trains.size();i++){
-			Mat[] train_set = trains.get(i);
-			for(int j = 0;j < train_set.length;j++){
-				int diff1 = difference(templates.get(0)[j], train_set[j]);
-				int diff2 = difference(templates.get(1)[j], train_set[j]);
-				if(diff1 < diff2){
-					weights[0][j] += learningRate;
-					weights[1][j] -= learningRate;
-				} else if(diff1 > diff2){
-					weights[1][j] += learningRate;
-					weights[0][j] -= learningRate;
-				}
+	public void train(List<Mat[]> trainSets){
+		for(int i = 0;i < trainSets.size();i++){
+			Mat[] trainSet = trainSets.get(i);
+			for(int j = 0;j < trainSet.length;j++){
+				int minDiffIndex = indexOfSimilarTemp(templates.get(i), trainSet[j]);
+				updateWeights(i, minDiffIndex);
 			}
 		}
 	}
-	public char[] classify(Mat[] tests){
+	/** @return index of most similar template */
+	private int indexOfSimilarTemp(Mat[] charTemps, Mat trainPt){
+		int minDiffIndex = 0;
+		int minDiff = difference(charTemps[0], trainPt);
+		for(int i = 1;i < charTemps.length;i++){
+			int diff = difference(charTemps[i], trainPt);
+			if(diff < minDiff){
+				minDiffIndex = i;
+				minDiff = diff;
+			}
+		}
+		return minDiffIndex;
+	}
+	private void updateWeights(int rowNum, int minDiffIndex){
+		weights[rowNum][minDiffIndex] += (weights[0].length - 1)*learnRate;
+		for(int i = 0;i < weights[0].length;i++)
+			if(i != minDiffIndex)
+				weights[rowNum][i] -= learnRate;
+	}
+	public char[] classify(List<Mat> tests){
 		return classify(tests, System.out);
 	}
-	public char[] classify(Mat[] tests, PrintStream out){
-		char[] ret = new char[tests.length];
-		for(int i = 0;i < tests.length;i++){
+	public char[] classify(List<Mat> tests, PrintStream out){
+		char[] ret = new char[tests.size()];
+		for(int i = 0;i < tests.size();i++){
 			int minIndex = 0;
-			double minDiff = Double.POSITIVE_INFINITY;
-			for(int j = 0;j < templates.get(0).length;j++){
-				double diff = weight_diff(j, tests[i]);
+			double minDiff = weight_diff(0, tests.get(i));
+			for(int j = 1;j < templates.size();j++){
+				double diff = weight_diff(j, tests.get(i));
 				if(diff < minDiff){
 					minDiff = diff;
 					minIndex = j;
 				}
 			}
-			out.println(minIndex);
-			ret[i] = (char) ((char) minIndex + '0');
+			char clazz = minIndexToChar(minIndex);
+			out.println(clazz);
+			ret[i] = clazz;
 		}
 		return ret;
 	}
+	private char minIndexToChar(int minIndex){
+		return (minIndex < 11) ? (char)(minIndex + '0') :
+			((minIndex < 37) ? (char)(minIndex - 11 + 'A') : (char)(minIndex - 37 + 'a'));
+	}
 	public double weight_diff(int index, Mat m){
 		double sumDiff = 0;
-		for(int t = 0;t < weights.length;t++){
-			Mat tempM = templates.get(t)[index];
+		for(int t = 0;t < weights[0].length;t++){
+			Mat tempM = templates.get(index)[t];
 			int diff = difference(tempM, m);
 			if (diff == 0) {
 				return 0; // exact match!
 			}
-			sumDiff += weights[t][index]*diff;
+			sumDiff += weights[index][t]*diff;
 		}
 		return sumDiff;
 	}

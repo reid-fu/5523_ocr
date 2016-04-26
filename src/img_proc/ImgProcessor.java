@@ -1,6 +1,8 @@
 package img_proc;
 import java.util.*;
 import org.opencv.core.*;
+import org.opencv.imgproc.Imgproc;
+
 import img_proc.ImgDecomp.*;
 import ocr_main.Std;
 import util.*;
@@ -21,7 +23,7 @@ public class ImgProcessor {
 //			i++;
 //		}
 		// TODO: Hough
-		return this.buildDecomp(lines, spaceStats);
+		return this.buildDecomp(m, lines, spaceStats);
 	}
 	/** each line will have chars listed left to right */
 	public Map<Range,List<Rect>> separateLines(List<Rect> rects){
@@ -65,8 +67,8 @@ public class ImgProcessor {
 		stats.updateSepSpaces();
 		return stats;
 	}
-	public ImgDecomp buildDecomp(Map<Range,List<Rect>> lines, SpaceStats spaceStats){
-		ImgDecomp decomp = new ImgDecomp();
+	public ImgDecomp buildDecomp(Mat origImg, Map<Range,List<Rect>> lines, SpaceStats spaceStats){
+		ImgDecomp decomp = new ImgDecomp(origImg);
 		for(Range range : lines.keySet()){
 			Line l = decomp.new Line();
 			List<Rect> line = lines.get(range);
@@ -86,6 +88,11 @@ public class ImgProcessor {
 		decomp.lines.add(l);
 		}
 		return decomp;
+	}
+	public static Mat standardizedImg(Mat img){
+		Mat stdImg = new Mat(Std.STD_WIDTH, Std.STD_HEIGHT, img.type());
+		Imgproc.resize(img, stdImg, new Size(Std.STD_WIDTH, Std.STD_HEIGHT));
+		return stdImg;
 	}
 	
 	//TODO obsolete
